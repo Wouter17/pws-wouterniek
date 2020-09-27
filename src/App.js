@@ -31,7 +31,11 @@ class Board extends React.Component {
         super(props);
         this.state = {
             rows: '5',
-            squares: Array(25).fill(null)
+            squares: Array(25).fill(null),
+            start: '0',
+            end: '24',
+            changeStart: false,
+            changeEnd: false
         };
         this.handleChange = this.handleChange.bind(this);
     }
@@ -55,17 +59,39 @@ class Board extends React.Component {
     }
 
     handleClick(i){
-        const squares = this.state.squares.slice();
-        squares[i] = (squares[i]==null) ? 'X' : null;
-        this.setState({
-            squares: squares
-        })
+        if(this.state.changeStart){
+            {/*TODO toevoegen verandering start*/}
+        }else if(this.state.changeEnd){
+            {/*TODO toevoegen verandering eind*/}
+        }else {
+            const squares = this.state.squares.slice();
+            squares[i] = (squares[i] == null) ? 'X' : null;
+            this.setState({
+                squares: squares
+            })
+        }
     }
 
     handleChange(event) {
         this.setState({rows: event.target.value});
         this.setState({squares: Array(Math.pow(event.target.value, 2)).fill(null)});
     }
+
+    changeStart = event => {
+        this.setState({
+            changeStart: !this.state.changeStart,
+            changeEnd: false
+        });
+    };
+
+    changeEnd = event =>{
+        this.setState({
+            changeStart: false,
+            changeEnd: !this.state.changeEnd
+        });
+        console.log("changeing buttonPressed");
+        event.currentTarget.classList.toggle("buttonPressed")
+    };
 
     renderBoard = (rows) => {
         let board = [];
@@ -84,7 +110,9 @@ class Board extends React.Component {
             <div>
                 <form>
                     <input className="number" type="number" value={this.state.rows} onChange={this.handleChange} />
-                    {/*<button className="button" onClick={this.solve}>{"Solve"}</button>*/}
+                    {<button className="button" type="button" onClick={this.changeStart}>{"Change start"}</button>}
+                    <button className="button" type="button" onClick={this.changeEnd}>{"Change end"}</button>
+                    {/*<button className="button" type="button" onClick={this.solve}>{"Solve"}</button>*/}
                 </form>
                 {this.renderBoard(this.state.rows)}
             </div>
