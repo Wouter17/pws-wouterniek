@@ -25,6 +25,15 @@ let Square = (props) => {
     );
 };
 
+let ChangeButton = props => {
+    let status = props.status;
+    let ClassName = "button";
+    if (status===true) ClassName = "button buttonPressed";
+    return(
+        <button className={ClassName} type={props.type} onClick={props.onClick}>{props.children}</button>
+    )
+};
+
 
 class Board extends React.Component {
     constructor(props) {
@@ -82,6 +91,7 @@ class Board extends React.Component {
             changeStart: !this.state.changeStart,
             changeEnd: false
         });
+        //event.currentTarget.classList.toggle("buttonPressed")
     };
 
     changeEnd = event =>{
@@ -89,8 +99,8 @@ class Board extends React.Component {
             changeStart: false,
             changeEnd: !this.state.changeEnd
         });
-        console.log("changeing buttonPressed");
-        event.currentTarget.classList.toggle("buttonPressed")
+        //console.log("changeing buttonPressed");
+        //event.currentTarget.classList.toggle("buttonPressed")
     };
 
     renderBoard = (rows) => {
@@ -110,8 +120,8 @@ class Board extends React.Component {
             <div>
                 <form>
                     <input className="number" type="number" value={this.state.rows} onChange={this.handleChange} />
-                    {<button className="button" type="button" onClick={this.changeStart}>{"Change start"}</button>}
-                    <button className="button" type="button" onClick={this.changeEnd}>{"Change end"}</button>
+                    {<ChangeButton status={this.state.changeStart} type="button" onClick={this.changeStart}>{"Change start"}</ChangeButton>}
+                    <ChangeButton status={this.state.changeEnd} type="button" onClick={this.changeEnd}>{"Change end"}</ChangeButton>
                     {/*<button className="button" type="button" onClick={this.solve}>{"Solve"}</button>*/}
                 </form>
                 {this.renderBoard(this.state.rows)}
