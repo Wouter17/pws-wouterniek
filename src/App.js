@@ -64,24 +64,8 @@ class Board extends React.Component {
             );
         }
     }
-        /*
-        if(!(i === 0 || i === Math.pow(this.state.rows,2)-1)) {
-            return (
-                <Square
-                    className="square"
-                    value={this.state.squares[i]}
-                    onClick={() => this.handleClick(i)}
-                />
-            );
-        }else{
-            if(i===this.state.start) {
-                return (<Square className="start" value={"Start"}/>);
-            }else{
-                return (<Square className="end" value={"End"}/>);
-            }
-         */
 
-    handleClick(i, event){
+    handleClick(i){
         if(this.state.changeStart){
             this.setState({start: i});
         }else if(this.state.changeEnd){
@@ -105,14 +89,14 @@ class Board extends React.Component {
         this.setState({squares: Array(Math.pow(event.target.value, 2)).fill(null)});
     }
 
-    changeStart = event => {
+    changeStart = () => {
         this.setState({
             changeStart: !this.state.changeStart,
             changeEnd: false
         });
     };
 
-    changeEnd = event =>{
+    changeEnd = () =>{
         this.setState({
             changeStart: false,
             changeEnd: !this.state.changeEnd
@@ -136,7 +120,7 @@ class Board extends React.Component {
             <div>
                 <form>
                     <input className="number" type="number" value={this.state.rows} min="3" onChange={this.handleChange} />
-                    {<ChangeButton status={this.state.changeStart} type="button" onClick={this.changeStart}>{"Change start"}</ChangeButton>}
+                    <ChangeButton status={this.state.changeStart} type="button" onClick={this.changeStart}>{"Change start"}</ChangeButton>
                     <ChangeButton status={this.state.changeEnd} type="button" onClick={this.changeEnd}>{"Change end"}</ChangeButton>
                     {/*<button className="button" type="button" onClick={this.solve}>{"Solve"}</button>*/}
                 </form>

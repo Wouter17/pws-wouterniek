@@ -3,7 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="d52e4032-3252-41cd-9835-55830a54f974" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/manifest.json" beforeDir="false" afterPath="$PROJECT_DIR$/public/manifest.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/App.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -58,7 +57,7 @@
       <workItem from="1597838911225" duration="14934000" />
       <workItem from="1601230029828" duration="1541000" />
       <workItem from="1601235621262" duration="3088000" />
-      <workItem from="1601414112078" duration="3069000" />
+      <workItem from="1601414112078" duration="3280000" />
     </task>
     <task id="LOCAL-00001" summary="init">
       <created>1601231355924</created>
@@ -88,7 +87,14 @@
       <option name="project" value="LOCAL" />
       <updated>1601415998864</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="toevoegen veranderen locatie start/end gebaseerd op variabele">
+      <created>1601417314508</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1601417314508</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -99,17 +105,18 @@
     <MESSAGE value="toevoegen website aan README.md" />
     <MESSAGE value="basis leggen voor selecteren start en eind" />
     <MESSAGE value="toevoegen schakelen tussen change start/end" />
-    <option name="LAST_COMMIT_MESSAGE" value="toevoegen schakelen tussen change start/end" />
+    <MESSAGE value="toevoegen veranderen locatie start/end gebaseerd op variabele" />
+    <option name="LAST_COMMIT_MESSAGE" value="toevoegen veranderen locatie start/end gebaseerd op variabele" />
   </component>
   <component name="WindowStateProjectService">
     <state x="414" y="176" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1597847176802">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="414" y="176" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1040/-1920.0.1920.1040@0.0.1920.1040" timestamp="1597847176802" />
-    <state x="583" y="29" key="CommitChangelistDialog2" timestamp="1601415997403">
+    <state x="583" y="29" key="CommitChangelistDialog2" timestamp="1601417313265">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="583" y="29" key="CommitChangelistDialog2/0.0.1920.1040/-1920.0.1920.1040@0.0.1920.1040" timestamp="1601415997403" />
+    <state x="583" y="29" key="CommitChangelistDialog2/0.0.1920.1040/-1920.0.1920.1040@0.0.1920.1040" timestamp="1601417313265" />
     <state width="1877" height="191" key="GridCell.Tab.0.bottom" timestamp="1601416212514">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
