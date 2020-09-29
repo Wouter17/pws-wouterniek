@@ -86,7 +86,6 @@ class Board extends React.Component {
             start: 0,
             end: Math.pow(event.target.value, 2) - 1
         });
-        this.setState({squares: Array(Math.pow(event.target.value, 2)).fill(null)});
     }
 
     changeStart = () => {
