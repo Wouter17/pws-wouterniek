@@ -39,10 +39,10 @@ class Board extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            rows: '5',
+            rows: 5,
             squares: Array(25).fill(null),
-            start: '0',
-            end: '24',
+            start: 0,
+            end: 24,
             changeStart: false,
             changeEnd: false
         };
@@ -50,6 +50,21 @@ class Board extends React.Component {
     }
 
     renderSquare(i) {
+        if (i === this.state.start) {
+            return (<Square className="start" value={"Start"}/>);
+        } else if (i === this.state.end) {
+            return (<Square className="end" value={"End"}/>);
+        } else {
+            return (
+                <Square
+                    className="square"
+                    value={this.state.squares[i]}
+                    onClick={() => this.handleClick(i)}
+                />
+            );
+        }
+    }
+        /*
         if(!(i === 0 || i === Math.pow(this.state.rows,2)-1)) {
             return (
                 <Square
@@ -59,19 +74,18 @@ class Board extends React.Component {
                 />
             );
         }else{
-            if(i===0) {
+            if(i===this.state.start) {
                 return (<Square className="start" value={"Start"}/>);
             }else{
                 return (<Square className="end" value={"End"}/>);
             }
-        }
-    }
+         */
 
-    handleClick(i){
+    handleClick(i, event){
         if(this.state.changeStart){
-            {/*TODO toevoegen verandering start*/}
+            this.setState({start: i});
         }else if(this.state.changeEnd){
-            {/*TODO toevoegen verandering eind*/}
+            this.setState({end: i});
         }else {
             const squares = this.state.squares.slice();
             squares[i] = (squares[i] == null) ? 'X' : null;
@@ -82,7 +96,12 @@ class Board extends React.Component {
     }
 
     handleChange(event) {
-        this.setState({rows: event.target.value});
+        this.setState({
+            rows: event.target.value,
+            squares: Array(Math.pow(event.target.value, 2)).fill(null),
+            start: 0,
+            end: Math.pow(event.target.value, 2) - 1
+        });
         this.setState({squares: Array(Math.pow(event.target.value, 2)).fill(null)});
     }
 
@@ -91,7 +110,6 @@ class Board extends React.Component {
             changeStart: !this.state.changeStart,
             changeEnd: false
         });
-        //event.currentTarget.classList.toggle("buttonPressed")
     };
 
     changeEnd = event =>{
@@ -99,8 +117,6 @@ class Board extends React.Component {
             changeStart: false,
             changeEnd: !this.state.changeEnd
         });
-        //console.log("changeing buttonPressed");
-        //event.currentTarget.classList.toggle("buttonPressed")
     };
 
     renderBoard = (rows) => {
@@ -119,7 +135,7 @@ class Board extends React.Component {
     render() {return (
             <div>
                 <form>
-                    <input className="number" type="number" value={this.state.rows} onChange={this.handleChange} />
+                    <input className="number" type="number" value={this.state.rows} min="3" onChange={this.handleChange} />
                     {<ChangeButton status={this.state.changeStart} type="button" onClick={this.changeStart}>{"Change start"}</ChangeButton>}
                     <ChangeButton status={this.state.changeEnd} type="button" onClick={this.changeEnd}>{"Change end"}</ChangeButton>
                     {/*<button className="button" type="button" onClick={this.solve}>{"Solve"}</button>*/}
