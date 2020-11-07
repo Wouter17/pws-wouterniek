@@ -1,5 +1,5 @@
 :root{
-  --complete: lightgreen;
+  --complete: lightblue;
 }
 
 body {
@@ -58,7 +58,7 @@ code {
 }
 
 .start {
-  background: var(--complete);
+  background: lightgreen;
   border: 1px solid #999;
   float: left;
   font-size: 12px;
