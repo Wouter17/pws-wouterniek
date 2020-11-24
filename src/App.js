@@ -48,7 +48,7 @@ class Board extends React.Component {
             changeStart: false,
             changeEnd: false,
             solverType: "wall",
-            solverPassed: Array(25).fill(false),
+            solverPassed: Array(25).fill(0),
         };
         this.handleChange = this.handleChange.bind(this);
     }
@@ -90,45 +90,49 @@ class Board extends React.Component {
             squares: Array(Math.pow(parseInt(event.target.value), 2)).fill(null),
             start: 0,
             end: Math.pow(event.target.value, 2) - 1,
-            solverPassed: Array(Math.pow(parseInt(event.target.value), 2)).fill(false)
+            solverPassed: Array(Math.pow(parseInt(event.target.value), 2)).fill(0)
         });
     }
 
     //solvers
     wallSolver = (size, position, end, maze, timeoutLength) => {
-        console.log("starting the wall solve");
-        console.log(this.state.squares);
+        //console.log("starting the wall solve");
+        //console.log(this.state.squares);
         let solved = false;
-        let rotate,steps = 0;
-        let surroundingSpaces;
+        let rotate = 0;
+        let steps = 0;
+        let surroundingSpaces,solution;
         let facing = 2;
-        let solution;
         let slowSolve = () => {
             if (!solved) {
                 surroundingSpaces = checkSpace(size, position, false, maze);
-                console.log(surroundingSpaces);
-                console.log(facing);
-                console.log(this.state.squares);
+                //console.log(surroundingSpaces);
+                //console.log(facing);
+                //console.log(this.state.squares);
 
                 if (!surroundingSpaces[(facing + 3)%4]) {
                     facing = facing ? facing - 1 : 3;
-                    if (rotate-- <= -4){
+                    rotate = 0;
+
+                    position = position + moveSpace(facing, size.columns);
+                    let SolverPassedWithItem = [...this.state.solverPassed];
+                    if (SolverPassedWithItem[position]++ > 4){
                         solved = true;
                         solution = false;
                     }
-                    position = position + moveSpace(facing, size.columns);
-                    let SolverPassedWithItem = [...this.state.solverPassed];
-                    SolverPassedWithItem[position] = true;
                     this.setState({solverPassed: SolverPassedWithItem});
 
                     console.log(`rotated left and moved to ${position}`);
                     setTimeout(slowSolve, timeoutLength);
 
                 } else if (!surroundingSpaces[facing]) {
-                    rotate = 0;
+
                     position = position + moveSpace(facing, size.columns);
                     let SolverPassedWithItem = [...this.state.solverPassed];
-                    SolverPassedWithItem[position] = true;
+                    if (SolverPassedWithItem[position]++ > 4){
+                        solved = true;
+                        solution = false;
+                    }
                     this.setState({solverPassed: SolverPassedWithItem});
                     console.log(`moved to ${position}`);
                     setTimeout(slowSolve, timeoutLength);
@@ -147,7 +151,7 @@ class Board extends React.Component {
                     solved = true;
                     solution = this.state.solverPassed;
                 }
-            } else {console.log(solution); console.log(`in ${steps} steps`)};
+            } else {console.log(solution); console.log(`in ${steps} steps`)}
         };
         slowSolve();
     };
