@@ -21,7 +21,7 @@ function App() {
 
 let Square = (props) => {
     return (
-        <button className={props.className} onClick={props.onClick}>
+        <button style={props.style} className={props.className} onClick={props.onClick}>
             {props.value}
         </button>
     );
@@ -61,6 +61,7 @@ class Board extends React.Component {
         } else {
             return (
                 <Square
+                    style={{backgroundColor:`hsl(195, 53%, ${100 - this.state.solverPassed[i]*20}%)`}}
                     className={this.state.solverPassed[i] ? "square square-visit":"square"}
                     value={this.state.squares[i]}
                     onClick={() => this.handleClick(i)}
