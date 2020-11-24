@@ -70,10 +70,13 @@ class Board extends React.Component {
     }
 
     handleClick(i){
+        let squareChanged = [...this.state.squares];
         if(this.state.changeStart){
-            this.setState({start: i});
+            squareChanged[i] = null;
+            this.setState({start: i, squares: squareChanged});
         }else if(this.state.changeEnd){
-            this.setState({end: i});
+            squareChanged[i] = null;
+            this.setState({end: i, squares: squareChanged});
         }else {
             const squares = this.state.squares.slice();
             squares[i] = (squares[i] == null) ? 'X' : null;
@@ -81,7 +84,6 @@ class Board extends React.Component {
                 squares: squares
             })
         }
-        this.setState({solverPassed: Array(25).fill(false)});
     }
 
     handleChange(event) {
@@ -157,10 +159,13 @@ class Board extends React.Component {
     };
     //solvers end
 
-    solve = () => {
-        switch(this.state.solverType){
-            default: this.wallSolver({rows: this.state.rows, columns: this.state.rows}, this.state.start, this.state.end, this.state.squares, 500);
-        }
+    solve = async () => {
+        this.setState({solverPassed: Array(Math.pow(parseInt(this.state.rows), 2)).fill(0)}, ()=> {
+            switch(this.state.solverType){
+                default: this.wallSolver({rows: this.state.rows, columns: this.state.rows}, this.state.start, this.state.end, this.state.squares, 500);
+            }
+        })
+
     };
 
     changeStart = () => {
