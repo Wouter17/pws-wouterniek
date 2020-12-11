@@ -129,6 +129,7 @@ class Board extends React.Component {
                     setTimeout(slowSolve, timeoutLength);
 
                 } else if (!surroundingSpaces[facing]) {
+                    rotate = 0;
 
                     position = position + moveSpace(facing, size.columns);
                     let SolverPassedWithItem = [...this.state.solverPassed];
