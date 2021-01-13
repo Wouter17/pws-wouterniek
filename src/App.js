@@ -47,23 +47,25 @@ class Board extends React.Component {
             end: 24,
             changeStart: false,
             changeEnd: false,
-            solverType: "wall",
+            showNumbers: false,
+            solverType: "muur",
             solverPassed: Array(25).fill(0),
+            solverSolutionPath: [],
         };
         this.handleChange = this.handleChange.bind(this);
     }
 
     renderSquare(i) {
         if (i === this.state.start) {
-            return (<Square className="start" value={"Start"}/>);
+            return (<Square className="start" value={"Start"} style={{backgroundColor:this.state.solverSolutionPath.includes(i) ? "var(--path)" : ""}}/>);
         } else if (i === this.state.end) {
-            return (<Square className={this.state.solverPassed[i] ? "end-visit":"end"} value={"End"}/>);
+            return (<Square className="end" value={"End"} style={{backgroundColor:this.state.solverSolutionPath.includes(i) ? "var(--path)" :`hsl(195, 53%, ${100 - this.state.solverPassed[i]*20}%)`}}/>);
         } else {
             return (
                 <Square
-                    style={{backgroundColor:`hsl(195, 53%, ${100 - this.state.solverPassed[i]*20}%)`}}
+                    style={{backgroundColor:this.state.solverSolutionPath.includes(i) ? "var(--path)" :`hsl(195, 53%, ${100 - this.state.solverPassed[i]*20}%)`}}
                     className={this.state.solverPassed[i] ? "square square-visit":"square"}
-                    value={this.state.squares[i]}
+                    value={this.state.showNumbers? i : this.state.squares[i]}
                     onClick={() => this.handleClick(i)}
                 />
             );
@@ -93,7 +95,8 @@ class Board extends React.Component {
             squares: Array(Math.pow(parseInt(event.target.value), 2)).fill(null),
             start: 0,
             end: Math.pow(event.target.value, 2) - 1,
-            solverPassed: Array(Math.pow(parseInt(event.target.value), 2)).fill(0)
+            solverPassed: Array(Math.pow(parseInt(event.target.value), 2)).fill(0),
+            solverSolutionPath: [],
         });
     }
 
@@ -101,16 +104,25 @@ class Board extends React.Component {
     wallSolver = (size, position, end, maze, timeoutLength) => {
         //console.log("starting the wall solve");
         //console.log(this.state.squares);
+        let currentSolution = [position];
         let solved = false;
         let rotate = 0;
         let steps = 0;
         let surroundingSpaces,solution;
         let facing = 2;
+        let checkNewValue = (array, value) => {
+          if(array.indexOf(value) > -1){
+              return array.splice(array.indexOf(value)+1)
+          }else{
+              return array.push(value);
+          }
+        };
+
         let slowSolve = () => {
             if (!solved) {
                 surroundingSpaces = checkSpace(size, position, false, maze);
                 //console.log(surroundingSpaces);
-                //console.log(facing);
+                console.log(currentSolution);
                 //console.log(this.state.squares);
 
                 if (!surroundingSpaces[(facing + 3)%4]) {
@@ -123,9 +135,11 @@ class Board extends React.Component {
                         solved = true;
                         solution = false;
                     }
-                    this.setState({solverPassed: SolverPassedWithItem});
+                    checkNewValue(currentSolution,position);
+                    this.setState({solverPassed: SolverPassedWithItem, solverSolutionPath: currentSolution});
 
                     console.log(`rotated left and moved to ${position}`);
+                    steps++;
                     setTimeout(slowSolve, timeoutLength);
 
                 } else if (!surroundingSpaces[facing]) {
@@ -137,8 +151,10 @@ class Board extends React.Component {
                         solved = true;
                         solution = false;
                     }
-                    this.setState({solverPassed: SolverPassedWithItem});
+                    checkNewValue(currentSolution,position);
+                    this.setState({solverPassed: SolverPassedWithItem, solverSolutionPath: currentSolution});
                     console.log(`moved to ${position}`);
+                    steps++;
                     setTimeout(slowSolve, timeoutLength);
 
                 } else {
@@ -150,10 +166,9 @@ class Board extends React.Component {
                     console.log("rotated right");
                     slowSolve();
                 }
-		        steps++;
                 if (position === end) {
                     solved = true;
-                    solution = this.state.solverPassed;
+                    solution = currentSolution;
                 }
             } else {console.log(solution); console.log(`in ${steps} steps`)}
         };
@@ -162,7 +177,10 @@ class Board extends React.Component {
     //solvers end
 
     solve = async () => {
-        this.setState({solverPassed: Array(Math.pow(parseInt(this.state.rows), 2)).fill(0)}, ()=> {
+        this.setState({
+            solverPassed: Array(Math.pow(parseInt(this.state.rows), 2)).fill(0),
+            solverSolutionPath: [],
+        }, ()=> {
             switch(this.state.solverType){
                 default: this.wallSolver({rows: this.state.rows, columns: this.state.rows}, this.state.start, this.state.end, this.state.squares, 500);
             }
@@ -200,12 +218,26 @@ class Board extends React.Component {
     render() {return (
             <div>
                 <form>
-                    <input className="number" type="number" value={this.state.rows} min="3" onChange={this.handleChange} />
-                    <ChangeButton status={this.state.changeStart} type="button" onClick={this.changeStart}>{"Change start"}</ChangeButton>
-                    <ChangeButton status={this.state.changeEnd} type="button" onClick={this.changeEnd}>{"Change end"}</ChangeButton>
-                    {<button className="button" type="button" onClick={this.solve}>{"Solve"}</button>}
+                    <div>
+                        <label htmlFor="size">Grootte:</label>
+                        <input className="number" id="size" type="number" value={this.state.rows} min="3" onChange={this.handleChange}/>
+                        <ChangeButton status={this.state.changeStart} type="button" onClick={this.changeStart}>{"Change start"}</ChangeButton>
+                        <ChangeButton status={this.state.changeEnd} type="button" onClick={this.changeEnd}>{"Change end"}</ChangeButton>
+                        <button className="button" type="button" onClick={this.solve}>{"Solve"}</button>
+                        <button className="button" type="button" onMouseDown={() => this.setState({showNumbers: true})} onMouseUp={() => this.setState({showNumbers: false})}>{"Show numbers"}</button>
+                    </div>
+                    <div>
+                        <label htmlFor="algoritme">Kies een algoritme: </label>
+                        <select name="algoritme" id="algoritme" onChange={event => this.setState({solverType: event.target.value})}>
+                            <option value="muur">Muurvolger</option>
+                            <option value="dijsktra">Dijsktra</option>
+                            <option value="breath">Breath-first</option>
+                        </select>
+                    </div>
                 </form>
-                {this.renderBoard(this.state.rows)}
+                <div>
+                    {this.renderBoard(this.state.rows)}
+                </div>
             </div>
         );
     }
