@@ -117,6 +117,12 @@ class Board extends React.Component {
               return array.push(value);
           }
         };
+        let checkEnd = () => {
+            if (position === end) {
+                solved = true;
+                solution = currentSolution;
+            }
+        };
 
         let slowSolve = () => {
             if (!solved) {
@@ -131,7 +137,7 @@ class Board extends React.Component {
 
                     position = position + moveSpace(facing, size.columns);
                     let SolverPassedWithItem = [...this.state.solverPassed];
-                    if (SolverPassedWithItem[position]++ > 4){
+                    if (SolverPassedWithItem[position]++ > 3){
                         solved = true;
                         solution = false;
                     }
@@ -140,6 +146,7 @@ class Board extends React.Component {
 
                     console.log(`rotated left and moved to ${position}`);
                     steps++;
+                    checkEnd();
                     setTimeout(slowSolve, timeoutLength);
 
                 } else if (!surroundingSpaces[facing]) {
@@ -147,7 +154,7 @@ class Board extends React.Component {
 
                     position = position + moveSpace(facing, size.columns);
                     let SolverPassedWithItem = [...this.state.solverPassed];
-                    if (SolverPassedWithItem[position]++ > 4){
+                    if (SolverPassedWithItem[position]++ > 3){
                         solved = true;
                         solution = false;
                     }
@@ -155,6 +162,7 @@ class Board extends React.Component {
                     this.setState({solverPassed: SolverPassedWithItem, solverSolutionPath: currentSolution});
                     console.log(`moved to ${position}`);
                     steps++;
+                    checkEnd();
                     setTimeout(slowSolve, timeoutLength);
 
                 } else {
@@ -166,13 +174,62 @@ class Board extends React.Component {
                     console.log("rotated right");
                     slowSolve();
                 }
+            } else {
+                if(!solution)this.setState({solverSolutionPath: []});
+                console.log(solution); console.log(`in ${steps} steps`)
+            }
+        };
+        slowSolve();
+    };
+
+    breathSolver = (size, position, end, maze, timeoutLength) => {
+        console.log("started breath solve");
+        let visited = [position];
+        let toDiscover = [];
+        let steps = 0;
+        let solved = false;
+        let surroundingSpaces,solution;
+
+        let slowSolve = () => {
+            if(!solved) {
+                surroundingSpaces = checkSpace(size, position, false, maze);
+                surroundingSpaces.forEach((value, index) => {
+                    let space = position + moveSpace(index, size.columns);
+
+                    if (value===false && !visited.includes(space) && !toDiscover.includes(space) && size.columns*size.rows > space && space > -1) {
+                        toDiscover = [...toDiscover, space];
+                    }
+                });
+                /*
+                console.log("surroundingSpaces: "+surroundingSpaces);
+                console.log("position: "+position);
+                console.log("toDiscover: "+toDiscover);
+                console.log("visited: "+visited);*/
+                if (toDiscover.length === 0) {
+                    solved = true;
+                    solution = false;
+                } else {
+                    position = toDiscover.shift();
+                    visited = [...visited,position];
+                    let visitedForState = Array(size.rows*size.columns).fill(0);
+                    visited.forEach((item) => visitedForState[item]=true);
+                    this.setState({solverPassed: visitedForState});
+                }
+
                 if (position === end) {
                     solved = true;
-                    solution = currentSolution;
                 }
+                steps++;
+                setTimeout(slowSolve, timeoutLength);
             } else {console.log(solution); console.log(`in ${steps} steps`)}
         };
         slowSolve();
+        /*
+        voor elke buur,
+        voeg toe aan eind array
+        neem eerste item uit array
+
+        */
     };
     //solvers end
 
@@ -182,6 +239,7 @@ class Board extends React.Component {
             solverSolutionPath: [],
         }, ()=> {
             switch(this.state.solverType){
+                case "breath": this.breathSolver({rows: this.state.rows, columns: this.state.rows}, this.state.start, this.state.end, this.state.squares, 500); break;
                 default: this.wallSolver({rows: this.state.rows, columns: this.state.rows}, this.state.start, this.state.end, this.state.squares, 500);
             }
         })
