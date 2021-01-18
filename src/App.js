@@ -237,11 +237,13 @@ class Board extends React.Component {
             } else {
                 let searchingPosition = {id:position, parent:finalNodeParent};
                 let solutionArray = [position.id];
+                const findParent = value => value.id === searchingPosition;
 
                 while (searchingPosition.id !== start){
                     searchingPosition = searchingPosition.parent;
                     solutionArray = [searchingPosition,...solutionArray];
-                    searchingPosition = visited.find(value => value.id === searchingPosition);
+                    // eslint-disable-next-line no-loop-func
+                    searchingPosition = visited.find(findParent);
                 }
 
                 solution = [...solutionArray];
