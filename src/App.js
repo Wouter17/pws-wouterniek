@@ -182,8 +182,10 @@ class Board extends React.Component {
         slowSolve();
     };
 
-    breathSolver = (size, position, end, maze, timeoutLength) => {
-        console.log("started breath solve");
+    dijkstraSolver = (size, position, end, maze, timeoutLength) => {
+        let start = position;
+        let finalNodeParent;
+        position = {id: position, parent: position};
         let visited = [position];
         let toDiscover = [];
         let steps = 0;
@@ -192,27 +194,38 @@ class Board extends React.Component {
 
         let slowSolve = () => {
             if(!solved) {
-                surroundingSpaces = checkSpace(size, position, false, maze);
+                surroundingSpaces = checkSpace(size, position.id, false, maze);
                 surroundingSpaces.forEach((value, index) => {
-                    let space = position + moveSpace(index, size.columns);
+                    let space = position.id + moveSpace(index, size.columns);
 
-                    if (value===false && !visited.includes(space) && !toDiscover.includes(space) && size.columns*size.rows > space && space > -1) {
-                        toDiscover = [...toDiscover, space];
+                    if (value===false && !visited.some(value => value.id === space) && !toDiscover.some(value => value.id === space) && size.columns*size.rows > space && space > -1) {
+                        toDiscover = [...toDiscover, {id:space, parent:position.id}];
                     }
                 });
+
                 /*
-                console.log("surroundingSpaces: "+surroundingSpaces);
-                console.log("position: "+position);
-                console.log("toDiscover: "+toDiscover);
-                console.log("visited: "+visited);*/
+                console.log("surroundingSpaces: ");
+                console.log(surroundingSpaces);
+                console.log("position: ");
+                console.log(position);
+                console.log("toDiscover: ");
+                console.log(toDiscover);
+                console.log("visited: ");
+                console.log(visited);
+                */
+
                 if (toDiscover.length === 0) {
                     solved = true;
                     solution = false;
                 } else {
+                    if(toDiscover[0].id === end){
+                        solved = true;
+                        finalNodeParent = toDiscover[0].parent;
+                    }
                     position = toDiscover.shift();
                     visited = [...visited,position];
                     let visitedForState = Array(size.rows*size.columns).fill(0);
-                    visited.forEach((item) => visitedForState[item]=true);
+                    visited.forEach((item) => visitedForState[item.id]=true);
                     this.setState({solverPassed: visitedForState});
                 }
 
@@ -221,15 +234,25 @@ class Board extends React.Component {
                 }
                 steps++;
                 setTimeout(slowSolve, timeoutLength);
-            } else {console.log(solution); console.log(`in ${steps} steps`)}
+            } else {
+                let searchingPosition = {id:position, parent:finalNodeParent};
+                let solutionArray = [position.id];
+
+                while (searchingPosition.id !== start){
+                    searchingPosition = searchingPosition.parent;
+                    solutionArray = [searchingPosition,...solutionArray];
+                    searchingPosition = visited.find(value => value.id === searchingPosition);
+                }
+
+                solution = [...solutionArray];
+                this.setState({solverSolutionPath: solution});
+
+                console.log("solution: ");
+                console.log(solution);
+                console.log(`In ${steps} steps`);
+            }
         };
         slowSolve();
-        /*
-        voor elke buur,
-        voeg toe aan eind array
-        neem eerste item uit array
-
-        */
     };
     //solvers end
 
@@ -239,7 +262,7 @@ class Board extends React.Component {
             solverSolutionPath: [],
         }, ()=> {
             switch(this.state.solverType){
-                case "breath": this.breathSolver({rows: this.state.rows, columns: this.state.rows}, this.state.start, this.state.end, this.state.squares, 500); break;
+                case "dijkstra": this.dijkstraSolver({rows: this.state.rows, columns: this.state.rows}, this.state.start, this.state.end, this.state.squares, 500); break;
                 default: this.wallSolver({rows: this.state.rows, columns: this.state.rows}, this.state.start, this.state.end, this.state.squares, 500);
             }
         })
@@ -278,7 +301,7 @@ class Board extends React.Component {
                 <form>
                     <div>
                         <label htmlFor="size">Grootte:</label>
-                        <input className="number" id="size" type="number" value={this.state.rows} min="3" onChange={this.handleChange}/>
+                        <input className="number" id="size" type="number" value={this.state.rows} min="3" max="50" onChange={this.handleChange}/>
                         <ChangeButton status={this.state.changeStart} type="button" onClick={this.changeStart}>{"Change start"}</ChangeButton>
                         <ChangeButton status={this.state.changeEnd} type="button" onClick={this.changeEnd}>{"Change end"}</ChangeButton>
                         <button className="button" type="button" onClick={this.solve}>{"Solve"}</button>
@@ -288,8 +311,8 @@ class Board extends React.Component {
                         <label htmlFor="algoritme">Kies een algoritme: </label>
                         <select name="algoritme" id="algoritme" onChange={event => this.setState({solverType: event.target.value})}>
                             <option value="muur">Muurvolger</option>
-                            <option value="dijsktra">Dijsktra</option>
-                            <option value="breath">Breath-first</option>
+                            <option value="dijkstra">Dijkstra (Breath-first)</option>
+                            {/*<option value="breath">Breath-first</option> //wordt waarschijnlijk random-deapth first*/}
                         </select>
                     </div>
                 </form>
