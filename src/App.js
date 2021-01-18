@@ -235,19 +235,21 @@ class Board extends React.Component {
                 steps++;
                 setTimeout(slowSolve, timeoutLength);
             } else {
-                let searchingPosition = {id:position, parent:finalNodeParent};
-                let solutionArray = [position.id];
-                const findParent = value => value.id === searchingPosition;
+                if(solution !== false) {
+                    let searchingPosition = {id: position, parent: finalNodeParent};
+                    let solutionArray = [position.id];
+                    const findParent = value => value.id === searchingPosition;
 
-                while (searchingPosition.id !== start){
-                    searchingPosition = searchingPosition.parent;
-                    solutionArray = [searchingPosition,...solutionArray];
-                    // eslint-disable-next-line no-loop-func
-                    searchingPosition = visited.find(findParent);
+                    while (searchingPosition.id !== start) {
+                        searchingPosition = searchingPosition.parent;
+                        solutionArray = [searchingPosition, ...solutionArray];
+                        // eslint-disable-next-line no-loop-func
+                        searchingPosition = visited.find(findParent);
+                    }
+
+                    solution = [...solutionArray];
+                    this.setState({solverSolutionPath: solution});
                 }
-
-                solution = [...solutionArray];
-                this.setState({solverSolutionPath: solution});
 
                 console.log("solution: ");
                 console.log(solution);
