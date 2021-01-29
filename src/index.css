@@ -19,7 +19,6 @@ code {
 }
 
 .square {
-  /*background: #fff;*/
   border: 1px solid #999;
   float: left;
   font-size: 24px;
@@ -40,44 +39,36 @@ code {
 }
 
 .number{
-  margin: 10px 10px 10px 5px;
+  margin: 10px 5px 10px 5px;
 }
 
-.start {
+.start, .end{
+  border: 1px solid #999;
+  float: left;
+  font-size: 12px;
+  font-weight: bold;
+  line-height: 34px;
+  height: 34px;
+  margin-right: -1px;
+  margin-top: -1px;
+  padding: 0;
+  text-align: center;
+  width: 34px;
+}
+
+.start{
   background: lightgreen;
-  border: 1px solid #999;
-  float: left;
-  font-size: 12px;
-  font-weight: bold;
-  line-height: 34px;
-  height: 34px;
-  margin-right: -1px;
-  margin-top: -1px;
-  padding: 0;
-  text-align: center;
-  width: 34px;
 }
 
-.end {
+.end{
   background: #fff;
-  border: 1px solid #999;
-  float: left;
-  font-size: 12px;
-  font-weight: bold;
-  line-height: 34px;
-  height: 34px;
-  margin-right: -1px;
-  margin-top: -1px;
-  padding: 0;
-  text-align: center;
-  width: 34px;
 }
 
 .button{
   font-family: sans-serif;
   font-size: 100%;
   line-height: 1.15;
-  margin: 0;
+  margin: 0 0.3em;
 }
 
 .buttonPressed{
@@ -87,6 +78,10 @@ code {
 .status{
   display: block;
   font-size: 1.17em;
-  margin: 0.1em 0;
+  margin: 1.5em 0 0.1em;
   font-weight: bold;
+}
+
+.agoritmeSelector{
+  padding: 8px 0 15px;
 }
