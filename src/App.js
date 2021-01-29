@@ -234,7 +234,8 @@ class Board extends React.Component {
                 }
                 steps++;
                 setTimeout(slowSolve, timeoutLength);
-            } else {
+
+            } else { //if the solution has been found
                 if(solution !== false) {
                     let searchingPosition = {id: position, parent: finalNodeParent};
                     let solutionArray = [position.id];
@@ -243,7 +244,83 @@ class Board extends React.Component {
                     while (searchingPosition.id !== start) {
                         searchingPosition = searchingPosition.parent;
                         solutionArray = [searchingPosition, ...solutionArray];
-                        // eslint-disable-next-line no-loop-func
+                        searchingPosition = visited.find(findParent);
+                    }
+
+                    solution = [...solutionArray];
+                    this.setState({solverSolutionPath: solution});
+                }
+
+                console.log("solution: ");
+                console.log(solution);
+                console.log(`In ${steps} steps`);
+            }
+        };
+        slowSolve();
+    };
+
+    aStar = (size, position, end, maze, timeoutLength) => {
+        let start = position;
+        position = {id: position, parent: position, distanceFromStart:0};
+        let visited = [position];
+        let toDiscover = [];
+        let steps = 0;
+        let solved = false;
+        let surroundingSpaces,solution;
+        let getDistance = pos => {
+            return Math.abs(Math.floor((pos-end)/size.rows)) + Math.abs((pos-end)%size.columns);
+        };
+
+        let slowSolve = () => {
+            if(!solved){
+                surroundingSpaces = checkSpace(size, position.id, false, maze);
+                surroundingSpaces.forEach((value, index) => {
+                    let space = position.id + moveSpace(index, size.columns);
+
+                    if (value===false && !visited.some(value => value.id === space) && !toDiscover.some(value => value.id === space) && size.columns*size.rows > space && space > -1) {
+                        console.log("space:"+space + getDistance(space));
+                        toDiscover = [...toDiscover, {id:space, parent:position.id, distanceFromStart:position.distanceFromStart+1, distance:getDistance(space)+position.distanceFromStart}];
+                    }
+                });
+
+                /*
+                console.log("surroundingSpaces: ");
+                console.log(surroundingSpaces);
+                console.log("position: ");
+                console.log(position);
+                console.log("toDiscover: ");
+                console.log(toDiscover);
+                console.log("visited: ");
+                console.log(visited);
+                */
+
+                if (toDiscover.length === 0) {
+                    solved = true;
+                    solution = false;
+                } else {
+                    toDiscover.sort((a,b) => a.distance-b.distance);
+                    position = toDiscover.shift();
+                    visited = [...visited,position];
+                    let visitedForState = Array(size.rows*size.columns).fill(0);
+                    visited.forEach((item) => visitedForState[item.id]=true);
+                    this.setState({solverPassed: visitedForState});
+                }
+
+                if (position.id === end) {
+                    solved = true;
+                }
+                steps++;
+                setTimeout(slowSolve, timeoutLength);
+
+            }else{
+                if(solution !== false) {
+                    let searchingPosition = position;
+                    let solutionArray = [position.id];
+                    const findParent = value => value.id === searchingPosition;
+
+                    while (searchingPosition.id !== start) {
+                        searchingPosition = searchingPosition.parent;
+                        solutionArray = [searchingPosition, ...solutionArray];
                         searchingPosition = visited.find(findParent);
                     }
 
@@ -267,6 +344,7 @@ class Board extends React.Component {
         }, ()=> {
             switch(this.state.solverType){
                 case "dijkstra": this.dijkstraSolver({rows: this.state.rows, columns: this.state.rows}, this.state.start, this.state.end, this.state.squares, 500); break;
+                case "A*": this.aStar({rows: this.state.rows, columns: this.state.rows}, this.state.start, this.state.end, this.state.squares, 500); break;
                 default: this.wallSolver({rows: this.state.rows, columns: this.state.rows}, this.state.start, this.state.end, this.state.squares, 500);
             }
         })
@@ -316,6 +394,7 @@ class Board extends React.Component {
                         <select name="algoritme" id="algoritme" onChange={event => this.setState({solverType: event.target.value})}>
                             <option value="muur">Muurvolger</option>
                             <option value="dijkstra">Dijkstra (Breath-first)</option>
+                            <option value="A*">A*</option>
                             {/*<option value="breath">Breath-first</option> //wordt waarschijnlijk random-deapth first*/}
                         </select>
                     </div>
