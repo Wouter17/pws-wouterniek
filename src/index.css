@@ -113,3 +113,10 @@ code {
 .buttonPressed{
   background: lightgreen;
 }
+
+.status{
+  display: block;
+  font-size: 1.17em;
+  margin: 0.1em 0;
+  font-weight: bold;
+}

@@ -47,6 +47,7 @@ class Board extends React.Component {
             solverType: "muur",
             solverPassed: Array(25).fill(0),
             solverSolutionPath: [],
+            solverState: 'waiting'
         };
         this.handleChange = this.handleChange.bind(this);
     }
@@ -361,6 +362,18 @@ class Board extends React.Component {
         });
     };
 
+    getStatus = () => {
+        let state = this.state.solverState;
+
+        if (state === "waiting") {
+            return "Druk op oplossen zodra je klaar bent met tekenen";
+        }else if(state.result === false){
+            return `Mislukt na ${state.steps} stappen`;
+        }else if(state.result === true){
+            return `Gelukt in ${state.steps} via ${state.solution.join('&rarr')}`;
+        } else return "Het feit dat je dit ziet betekent dat er iets is misgegaan😅";
+    };
+
     renderBoard = (rows) => {
         let board = [];
 
@@ -374,7 +387,8 @@ class Board extends React.Component {
         return board;
     };
 
-    render() {return (
+    render() {
+        return (
             <div>
                 <form>
                     <div>
@@ -398,6 +412,10 @@ class Board extends React.Component {
                 <div>
                     {this.renderBoard(this.state.rows)}
                 </div>
+                <div className='status'>
+                    Status: {this.getStatus()}
+                </div>
+
             </div>
         );
     }
