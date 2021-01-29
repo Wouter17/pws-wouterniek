@@ -218,10 +218,11 @@ class Board extends React.Component {
                     solved = true;
                     solution = false;
                 } else {
+                    /*
                     if(toDiscover[0].id === end){
                         solved = true;
                         finalNodeParent = toDiscover[0].parent;
-                    }
+                    }*/
                     position = toDiscover.shift();
                     visited = [...visited,position];
                     let visitedForState = Array(size.rows*size.columns).fill(0);
@@ -229,7 +230,7 @@ class Board extends React.Component {
                     this.setState({solverPassed: visitedForState});
                 }
 
-                if (position === end) {
+                if (position.id === end) {
                     solved = true;
                 }
                 steps++;
@@ -237,7 +238,7 @@ class Board extends React.Component {
 
             } else { //if the solution has been found
                 if(solution !== false) {
-                    let searchingPosition = {id: position, parent: finalNodeParent};
+                    let searchingPosition = position;
                     let solutionArray = [position.id];
                     const findParent = value => value.id === searchingPosition;
 
