@@ -56,12 +56,15 @@ class Board extends React.Component {
         if (i === this.state.start) {
             return (<Square className="start" value={"Start"} style={{backgroundColor:this.state.solverSolutionPath.includes(i) ? "var(--path)" : ""}}/>);
         } else if (i === this.state.end) {
-            return (<Square className="end" value={"End"} style={{backgroundColor:this.state.solverSolutionPath.includes(i) ? "var(--path)" :`hsl(195, 53%, ${100 - this.state.solverPassed[i]*20}%)`}}/>);
+            return (<Square className="end" value={"Eind"} style={{backgroundColor:this.state.solverSolutionPath.includes(i) ? "var(--path)" :`hsl(195, 53%, ${100 - this.state.solverPassed[i]*20}%)`}}/>);
         } else {
             return (
                 <Square
-                    style={{backgroundColor:this.state.solverSolutionPath.includes(i) ? "var(--path)" :`hsl(195, 53%, ${100 - this.state.solverPassed[i]*20}%)`}}
-                    className={this.state.solverPassed[i] ? "square square-visit":"square"}
+                    style={{
+                        backgroundColor: this.state.solverSolutionPath.includes(i) ? "var(--path)" :`hsl(195, 53%, ${100 - this.state.solverPassed[i]*20}%)`,
+                        fontSize: this.state.showNumbers ? `${24- 3*i.toString().length}px` : "24px"
+                    }}
+                    className='square'
                     value={this.state.showNumbers? i : this.state.squares[i]}
                     onClick={() => this.handleClick(i)}
                 />
@@ -339,6 +342,7 @@ class Board extends React.Component {
     //solvers end
 
     solve = async () => {
+        if(this.state.solverState === "solving") return;
         this.setState({
             solverPassed: Array(Math.pow(parseInt(this.state.rows), 2)).fill(0),
             solverSolutionPath: [],
@@ -378,7 +382,7 @@ class Board extends React.Component {
         }else if(state.result === false){
             return `Mislukt na ${state.steps} stappen`;
         }else if(state.result === true){
-            return `Gelukt in ${state.steps} stappen via ${solve.join('→')}`;
+            return `Gelukt na ${state.steps} stappen in ${solve.length-1} stappen via ${solve.join('→')}`;
         } else return "Het feit dat je dit ziet betekent dat er iets is misgegaan😅";
     };
 
@@ -402,10 +406,10 @@ class Board extends React.Component {
                     <div>
                         <label htmlFor="size">Grootte:</label>
                         <input className="number" id="size" type="number" value={this.state.rows} min="3" max="50" onChange={this.handleChange}/>
-                        <ChangeButton status={this.state.changeStart} type="button" onClick={this.changeStart}>{"Change start"}</ChangeButton>
-                        <ChangeButton status={this.state.changeEnd} type="button" onClick={this.changeEnd}>{"Change end"}</ChangeButton>
-                        <button className="button" type="button" onClick={this.solve}>{"Solve"}</button>
-                        <button className="button" type="button" onMouseDown={() => this.setState({showNumbers: true})} onMouseUp={() => this.setState({showNumbers: false})}>{"Show numbers"}</button>
+                        <ChangeButton status={this.state.changeStart} type="button" onClick={this.changeStart}>{"Verander start"}</ChangeButton>
+                        <ChangeButton status={this.state.changeEnd} type="button" onClick={this.changeEnd}>{"Verander eind"}</ChangeButton>
+                        <button className="button" type="button" onClick={this.solve}>{"Oplossen"}</button>
+                        <button className="button" type="button" onMouseDown={() => this.setState({showNumbers: true})} onMouseUp={() => this.setState({showNumbers: false})}>{"Laat nummers zien"}</button>
                     </div>
                     <div>
                         <label htmlFor="algoritme">Kies een algoritme: </label>
