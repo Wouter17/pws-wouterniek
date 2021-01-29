@@ -102,8 +102,6 @@ class Board extends React.Component {
 
     //solvers
     wallSolver = (size, position, end, maze, timeoutLength) => {
-        //console.log("starting the wall solve");
-        //console.log(this.state.squares);
         let currentSolution = [position];
         let solved = false;
         let rotate = 0;
@@ -127,9 +125,6 @@ class Board extends React.Component {
         let slowSolve = () => {
             if (!solved) {
                 surroundingSpaces = checkSpace(size, position, false, maze);
-                //console.log(surroundingSpaces);
-                console.log(currentSolution);
-                //console.log(this.state.squares);
 
                 if (!surroundingSpaces[(facing + 3)%4]) {
                     facing = facing ? facing - 1 : 3;
@@ -202,26 +197,10 @@ class Board extends React.Component {
                     }
                 });
 
-                /*
-                console.log("surroundingSpaces: ");
-                console.log(surroundingSpaces);
-                console.log("position: ");
-                console.log(position);
-                console.log("toDiscover: ");
-                console.log(toDiscover);
-                console.log("visited: ");
-                console.log(visited);
-                */
-
                 if (toDiscover.length === 0) {
                     solved = true;
                     solution = false;
                 } else {
-                    /*
-                    if(toDiscover[0].id === end){
-                        solved = true;
-                        finalNodeParent = toDiscover[0].parent;
-                    }*/
                     position = toDiscover.shift();
                     visited = [...visited,position];
                     let visitedForState = Array(size.rows*size.columns).fill(0);
@@ -417,7 +396,6 @@ class Board extends React.Component {
                             <option value="muur">Muurvolger</option>
                             <option value="dijkstra">Dijkstra (Breath-first)</option>
                             <option value="A*">A*</option>
-                            {/*<option value="breath">Breath-first</option> //wordt waarschijnlijk random-deapth first*/}
                         </select>
                     </div>
                 </form>
