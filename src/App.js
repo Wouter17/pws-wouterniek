@@ -172,7 +172,7 @@ class Board extends React.Component {
                     slowSolve();
                 }
             } else {
-                if(!solution)this.setState({solverSolutionPath: []});
+                if(!solution)this.setState({solverSolutionPath: [], solverState: {result: false, steps: steps}}); else this.setState({solverState: {result: true, steps: steps}});
                 console.log(solution); console.log(`in ${steps} steps`)
             }
         };
@@ -245,7 +245,9 @@ class Board extends React.Component {
                     }
 
                     solution = [...solutionArray];
-                    this.setState({solverSolutionPath: solution});
+                    this.setState({solverSolutionPath: solution, solverState: {result: true, steps: steps}});
+                }else{
+                    this.setState({solverState: {result: false, steps: steps}})
                 }
 
                 console.log("solution: ");
@@ -322,7 +324,9 @@ class Board extends React.Component {
                     }
 
                     solution = [...solutionArray];
-                    this.setState({solverSolutionPath: solution});
+                    this.setState({solverSolutionPath: solution, solverState: {result: true, steps: steps}});
+                }else{
+                    this.setState({solverState: {result: false, steps: steps}});
                 }
 
                 console.log("solution: ");
@@ -338,6 +342,7 @@ class Board extends React.Component {
         this.setState({
             solverPassed: Array(Math.pow(parseInt(this.state.rows), 2)).fill(0),
             solverSolutionPath: [],
+            solverState:"solving"
         }, ()=> {
             switch(this.state.solverType){
                 case "dijkstra": this.dijkstraSolver({rows: this.state.rows, columns: this.state.rows}, this.state.start, this.state.end, this.state.squares, 500); break;
@@ -364,13 +369,16 @@ class Board extends React.Component {
 
     getStatus = () => {
         let state = this.state.solverState;
+        let solve = this.state.solverSolutionPath;
 
         if (state === "waiting") {
             return "Druk op oplossen zodra je klaar bent met tekenen";
+        }if (state === "solving") {
+            return "Druk bezig met het oplossen van het doolhof";
         }else if(state.result === false){
             return `Mislukt na ${state.steps} stappen`;
         }else if(state.result === true){
-            return `Gelukt in ${state.steps} via ${state.solution.join('&rarr')}`;
+            return `Gelukt in ${state.steps} stappen via ${solve.join('→')}`;
         } else return "Het feit dat je dit ziet betekent dat er iets is misgegaan😅";
     };
 
@@ -412,10 +420,8 @@ class Board extends React.Component {
                 <div>
                     {this.renderBoard(this.state.rows)}
                 </div>
-                <div className='status'>
-                    Status: {this.getStatus()}
-                </div>
-
+                <span className='status'>Status: </span>
+                <b>{this.getStatus()}</b>
             </div>
         );
     }
