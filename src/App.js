@@ -259,21 +259,9 @@ class Board extends React.Component {
                     let space = position.id + moveSpace(index, size.columns);
 
                     if (value===false && !visited.some(value => value.id === space) && !toDiscover.some(value => value.id === space) && size.columns*size.rows > space && space > -1) {
-                        console.log("space:"+space + getDistance(space));
                         toDiscover = [...toDiscover, {id:space, parent:position.id, distanceFromStart:position.distanceFromStart+1, distance:getDistance(space)+position.distanceFromStart}];
                     }
                 });
-
-                /*
-                console.log("surroundingSpaces: ");
-                console.log(surroundingSpaces);
-                console.log("position: ");
-                console.log(position);
-                console.log("toDiscover: ");
-                console.log(toDiscover);
-                console.log("visited: ");
-                console.log(visited);
-                */
 
                 if (toDiscover.length === 0) {
                     solved = true;
