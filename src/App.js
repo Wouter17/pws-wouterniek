@@ -255,7 +255,7 @@ class Board extends React.Component {
                     let space = position.id + moveSpace(index, size.columns);
 
                     if (value===false && !visited.some(value => value.id === space) && !toDiscover.some(value => value.id === space) && size.columns*size.rows > space && space > -1) {
-                        toDiscover = [...toDiscover, {id:space, parent:position.id, distanceFromStart:position.distanceFromStart+1, distance:getDistance(space)+position.distanceFromStart+1}];
+                        toDiscover = [{id:space, parent:position.id, distanceFromStart:position.distanceFromStart+1, distance:getDistance(space)+position.distanceFromStart+1},...toDiscover];
                     }
                 });
 
