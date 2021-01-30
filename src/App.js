@@ -1,7 +1,4 @@
 import React from 'react';
-// eslint-disable-next-line
-import logo from './logo.svg';
-import './App.css';
 import {checkSpace, moveSpace} from "./helperfunctions";
 //voorbeeld: gebruik checkSpace checkSpace({rows: 5, columns:5}, 4, undefined, this.state.squares)
 
