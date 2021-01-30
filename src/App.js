@@ -78,10 +78,9 @@ class Board extends React.Component {
             squareChanged[i] = null;
             this.setState({end: i, squares: squareChanged});
         }else {
-            const squares = this.state.squares.slice();
-            squares[i] = (squares[i] == null) ? 'X' : null;
+            squareChanged[i] = (squareChanged[i] == null) ? 'X' : null;
             this.setState({
-                squares: squares
+                squares: squareChanged
             })
         }
     }
