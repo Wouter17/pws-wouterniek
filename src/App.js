@@ -245,7 +245,7 @@ class Board extends React.Component {
         let solved = false;
         let surroundingSpaces,solution;
         let getDistance = pos => {
-            return Math.abs(Math.floor((pos-end)/size.rows)) + Math.abs((pos-end)%size.columns);
+            return Math.floor(Math.abs((pos-end)/size.rows)) + Math.abs(pos%size.columns-end%size.columns);
         };
 
         let slowSolve = () => {
