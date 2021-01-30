@@ -165,7 +165,7 @@ class Board extends React.Component {
                     console.log("rotated right");
                     slowSolve();
                 }
-            } else {
+            } else { //if the solution has been found
                 if(!solution)this.setState({solverSolutionPath: [], solverState: {result: false, steps: steps}}); else this.setState({solverState: {result: true, steps: steps}});
                 console.log(solution); console.log(`in ${steps} steps`)
             }
