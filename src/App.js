@@ -12,7 +12,7 @@ function App() {
   );
 }
 
-let Square = (props) => {
+let Square = props => {
     return (
         <button style={props.style} className={props.className} onClick={props.onClick}>
             {props.value}
