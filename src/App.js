@@ -70,6 +70,7 @@ class Board extends React.Component {
     }
 
     handleClick(i){
+        if(this.state.solverState === "solving")return;
         let squareChanged = [...this.state.squares];
         if(this.state.changeStart){
             squareChanged[i] = null;
