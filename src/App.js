@@ -375,7 +375,7 @@ class Board extends React.Component {
                         <button className="button" type="button" onClick={this.solve}>{"Oplossen"}</button>
                         <button className="button" type="button" onMouseDown={() => this.setState({showNumbers: true})} onMouseUp={() => this.setState({showNumbers: false})}>{"Laat nummers zien"}</button>
                     </div>
-                    <div className='agoritmeSelector'>
+                    <div className='algoritmeSelector'>
                         <label htmlFor="algoritme">Kies een algoritme: </label>
                         <select name="algoritme" id="algoritme" onChange={event => this.setState({solverType: event.target.value})}>
                             <option value="muur">Muurvolger</option>
