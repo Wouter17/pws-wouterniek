@@ -379,7 +379,7 @@ class Board extends React.Component {
                         <label htmlFor="algoritme">Kies een algoritme: </label>
                         <select name="algoritme" id="algoritme" onChange={event => this.setState({solverType: event.target.value})}>
                             <option value="muur">Muurvolger</option>
-                            <option value="dijkstra">Dijkstra (Breath-first)</option>
+                            <option value="dijkstra">Dijkstra (Breadth-first)</option>
                             <option value="A*">A*</option>
                         </select>
                     </div>
